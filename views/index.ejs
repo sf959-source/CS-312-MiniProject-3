@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sara's Blog</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Sara's Blog</h1>
+        <p>A place to share your ideas.</p>
+    </header>
+
+    <main>
+        <% if (user) { %>
+            <p>Signed in as <%= user.name %></p>
+
+            <form action="/signout" method="POST">
+                <button type="submit">Sign Out</button>
+            </form>
+
+            <h2>Write a Post</h2>
+
+            <form action="/posts" method="POST">
+                <label for="title">Post Title:</label>
+                <input type="text" id="title" name="title"
+                       maxlength="255" required>
+
+                <label for="content">Blog Post:</label>
+                <textarea id="content" name="content"
+                          rows="6" required></textarea>
+
+                <button type="submit">Create Post</button>
+            </form>
+        <% } else { %>
+            <p>
+                <a href="/signin">Sign In</a>
+                or
+                <a href="/signup">Sign Up</a>
+                to write a post.
+            </p>
+        <% } %>
+
+        <h2>Blog Posts</h2>
+
+        <% if (posts.length === 0) { %>
+            <p>No posts have been created yet.</p>
+        <% } %>
+
+        <% posts.forEach(function (post) { %>
+            <article>
+                <h3><%= post.title %></h3>
+                <p>By <%= post.creator %></p>
+                <p><%= post.createdAt.toLocaleString() %></p>
+                <p style="white-space: pre-wrap;"><%= post.content %></p>
+
+                <% if (user && user.user_id === post.creator_user_id) { %>
+                    <a href="/edit/<%= post.id %>">Edit</a>
+
+                    <form action="/delete/<%= post.id %>" method="POST">
+                        <button type="submit">Delete</button>
+                    </form>
+                <% } %>
+            </article>
+        <% }); %>
+    </main>
+</body>
+</html>
